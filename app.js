@@ -9,7 +9,7 @@ const userRoutes = require("./routes/users");
 const bookRoutes = require("./routes/books");
 const reservationRoutes = require("./routes/reservations");
 
-// Initialize app
+// Initialize appnm
 const app = express();
 
 // Apply middleware
