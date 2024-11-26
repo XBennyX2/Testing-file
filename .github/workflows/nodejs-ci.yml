@@ -13,25 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the repository
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Set up Node.js environment
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16' # Specify the Node.js version
+        node-version: '16' 
 
-    # Install dependencies
     - name: Install dependencies
       run: npm install
 
-    # Run tests
+  
     - name: Run tests
       run: npm test
 
-    # Optional: Upload test results (if needed)
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v3
