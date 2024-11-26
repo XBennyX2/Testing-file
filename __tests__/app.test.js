@@ -12,11 +12,13 @@ beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
 
-  // Connect to MongoDB (ensure only one connection)
-  await mongoose.connect(uri, {
-    useNewUrlParser: true, // Include options if needed
-    useUnifiedTopology: true
-  });
+  // Connect to MongoDB only if there's no existing connection
+  if (mongoose.connection.readyState === 0) {
+    await mongoose.connect(uri, {
+      useNewUrlParser: true, // Include options if needed
+      useUnifiedTopology: true
+    });
+  }
 
   // Start the server 
   server = app.listen(3000, () => {
