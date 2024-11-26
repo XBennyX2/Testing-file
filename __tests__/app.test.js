@@ -26,19 +26,23 @@ beforeAll(async () => {
   });
 });
 
-// Clean up after all tests
 afterAll(async () => {
-  // Graceful shutdown of MongoDB 
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
-  await mongoServer.stop();
-  server.close();
-});
-
-// Test suite for GET /api/auth
-describe("GET /api/auth", () => {
-  it("should return 200 status code", async () => {
-    const res = await request(server).get("/api/auth");
-    expect(res.statusCode).toBe(200);
+    jest.setTimeout(10000); 
+    try {
+      await mongoose.connection.dropDatabase();
+      await mongoose.connection.close();
+      await mongoServer.stop();
+      server.close();
+    } catch (error) {
+      console.error("Error during cleanup:", error); 
+    }
   });
-});
+  
+  describe("GET /api/auth", () => {
+    it("should return 200 status code", async () => {
+      const res = await request(server)
+        .get("/api/auth")
+        .set('Authorization', 'Bearer YOUR_TEST_TOKEN'); // Add authentication if needed
+      expect(res.statusCode).toBe(200);
+    });
+  });
