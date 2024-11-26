@@ -3,30 +3,30 @@ const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const app = require("../app");
 
+let server;
 let mongoServer;
 
-// Set up in-memory MongoDB before running tests
 beforeAll(async () => {
+    // Set up in-memory MongoDB
     mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
+    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-    // Avoid multiple connections
-    if (mongoose.connection.readyState === 0) {
-        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    }
+    // Start the server
+    server = app.listen(3000);
 });
 
-// Close the database connection after tests
 afterAll(async () => {
+    // Clean up
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
     await mongoServer.stop();
+    server.close();
 });
 
-// Tests
-describe("GET /", () => {
-    it("should respond with a status code 200", async () => {
-        const response = await request(app).get("/");
-        expect(response.statusCode).toBe(200);
+describe("GET /api/auth", () => {
+    it("should return 200 status code", async () => {
+        const res = await request(server).get("/api/auth");
+        expect(res.statusCode).toBe(200);
     });
 });
